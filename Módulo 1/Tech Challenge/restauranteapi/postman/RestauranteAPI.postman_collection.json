@@ -1,0 +1,213 @@
+{
+  "info": {
+    "name": "Usuarios API",
+    "description": "Colecao de testes para usuarios, troca de senha e validacao de login.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Cadastro cliente valido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/users",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Teste Cliente\",\n  \"email\": \"teste.cliente@example.com\",\n  \"login\": \"teste.cliente\",\n  \"password\": \"123456\",\n  \"address\": \"Rua dos Testes, 200\",\n  \"type\": \"CLIENTE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "02 - Cadastro cliente invalido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/users",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Teste Cliente\", \n  \"login\": \"teste.cliente\",\n  \"password\": \"123456\",\n  \"address\": \"Rua dos Testes, 200\",\n  \"type\": \"CLIENTE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "03 - Cadastro dono invalido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/users",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Teste Dono\",\n  \"email\": \"teste.dono@example.com\",\n  \"login\": \"teste.dono\",\n  \"password\": \"78910\",\n  \"address\": \"Rua dos Testes, 100\",\n  \"type\": \"DONO_RESTAURANTE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "04 - Cadastro dono valido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/users",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Teste Dono\",\n  \"email\": \"teste.dono@example.com\",\n  \"login\": \"teste.dono\",\n  \"password\": \"789101\",\n  \"address\": \"Rua dos Testes, 100\",\n  \"type\": \"DONO_RESTAURANTE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "05 - Listar usuarios",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/users"
+      }
+    },
+    {
+      "name": "06 - Buscar usuarios por nome",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/users?name=Teste"
+      }
+    },
+    {
+      "name": "07 - Validar login - Inválido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/validate",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"login\": \"teste.cliente\",\n  \"password\": \"654321\"\n}"
+        }
+      }
+    },
+    {
+      "name": "08 - Validar login - Válido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/validate",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"login\": \"teste.cliente\",\n  \"password\": \"123456\"\n}"
+        }
+      }
+    },
+    {
+      "name": "09 - Atualizar dados usuario - Valido",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/users/1",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Teste Cliente Atualizado\",\n  \"email\": \"teste.cliente@example.com\",\n  \"login\": \"teste.cliente\",\n  \"address\": \"Rua dos Testes, 200\",\n  \"type\": \"CLIENTE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "10 - Atualizar dados usuario - invalido",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/users/5",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Teste Cliente Atualizado\",\n  \"email\": \"teste.cliente@example.com\",\n  \"login\": \"teste.cliente\",\n  \"address\": \"Rua dos Testes, 200\",\n  \"type\": \"CLIENTE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "11 - Trocar senha - Invalido",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/users/2/password",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"currentPassword\": \"7891016\",\n  \"newPassword\": \"987654\"\n}"
+        }
+      }
+    },
+    {
+      "name": "12 - Trocar senha - Valido",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/users/2/password",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"currentPassword\": \"789101\",\n  \"newPassword\": \"987654\"\n}"
+        }
+      }
+    },
+    {
+      "name": "13 - Excluir usuario - Invalido",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/v1/users/4"
+      }
+    },
+    {
+      "name": "14 - Excluir usuario - Valido",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/v1/users/2"
+      }
+    }
+  ]
+}

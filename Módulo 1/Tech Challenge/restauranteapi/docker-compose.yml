@@ -1,0 +1,35 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: restauranteapi-mysql
+    environment:
+      MYSQL_DATABASE: restauranteapi
+      MYSQL_USER: restaurante
+      MYSQL_PASSWORD: restaurante
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: restauranteapi-api
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/restauranteapi?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo
+      SPRING_DATASOURCE_USERNAME: restaurante
+      SPRING_DATASOURCE_PASSWORD: restaurante
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:
