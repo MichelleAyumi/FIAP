@@ -8,22 +8,10 @@ Backend Spring Boot para cadastro e gerenciamento de usuarios, com validacao sim
 - Spring Boot 3.3
 - Maven
 - JDBC com `JdbcTemplate`
-- MySQL/MariaDB via XAMPP ou MySQL em Docker
+- MySQL via XAMPP ou Docker
 - Swagger/OpenAPI
 
-## Como executar com XAMPP
-
-1. Abra o XAMPP Control Panel.
-2. Inicie o servico `MySQL`.
-3. Acesse `http://localhost/phpmyadmin`.
-4. Crie um banco chamado `restauranteapi`.
-5. Rode a aplicacao:
-
-```bash
-mvn spring-boot:run
-```
-
-A configuracao padrao usa:
+## A configuracao padrao usa:
 
 - URL: `jdbc:mysql://localhost:3306/restauranteapi`
 - Usuario: `root`
@@ -66,5 +54,4 @@ A API ficara disponivel em:
 ## Colecao Postman
 
 A colecao esta em `postman/RestauranteAPI.postman_collection.json`.
-
-Importe no Postman e execute os requests. A colecao usa a variavel `baseUrl` com valor padrao `http://localhost:8080`.
+A colecao usa a variavel `baseUrl` com valor padrao `http://localhost:8080`.
