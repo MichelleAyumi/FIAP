@@ -1,5 +1,6 @@
 package com.talkevents.jpa.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -23,6 +24,11 @@ public class Location {
     @Column(nullable = false)
     private int capacity;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
+
     public UUID getId() {
         return id;
     }
@@ -39,6 +45,14 @@ public class Location {
         this.name = name;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public int getCapacity() {
         return capacity;
     }
@@ -47,11 +61,11 @@ public class Location {
         this.capacity = capacity;
     }
 
-    public String getAddress() {
-        return address;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 }
