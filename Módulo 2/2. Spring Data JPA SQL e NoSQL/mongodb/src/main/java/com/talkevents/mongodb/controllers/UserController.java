@@ -1,5 +1,6 @@
 package com.talkevents.mongodb.controllers;
 
+import com.talkevents.mongodb.documents.Address;
 import com.talkevents.mongodb.documents.User;
 import com.talkevents.mongodb.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -29,12 +30,29 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable String id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+        var user = userService.getUserById(id);
+
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
         var updatedUser = userService.update(id, user);
+
+        if (updatedUser == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PostMapping("/{id}/address")
+    public ResponseEntity<User> addAddressToUser(@PathVariable String id, @RequestBody Address address) {
+        var updatedUser = userService.updateAddress(id, address);
 
         if (updatedUser == null) {
             return ResponseEntity.notFound().build();

@@ -2,6 +2,7 @@ package com.talkevents.mongodb.documents;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 //Anotação da entidade
@@ -13,6 +14,18 @@ public class User {
     private String id;
     private String name;
     private int age;
+
+    //Referencia usuario - endereço
+    @DBRef
+    private Address address;
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
     public String getId() {
         return id;
