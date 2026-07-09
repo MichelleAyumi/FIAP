@@ -1,53 +1,64 @@
 package com.fiap.calculadora;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static java.lang.System.out;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest
 class CalculadoraApplicationTests {
+	public CalculadoraApplication calculadoraApplication;
+	private int a;
+	private int b;
 
-	public CalculadoraApplication calculadoraApplication = new CalculadoraApplication();
-	private int valorA = 2;
-	private int valorB = 3;
+	@BeforeEach
+	void setUp() {
+		calculadoraApplication = new CalculadoraApplication();
+		a = 5;
+		b = 2;
+	}
 
-	//Deve permitir somar
+	@Test
 	void somar(){
-		//fail("Código não implementado");
-		int resultado = calculadoraApplication.somar(valorA, valorB);
-		Assertions.assertEquals(resultado, 5);
+		//Arrange - Preparar
+		//Action - Agir/ Atuar
+		//Assert - Validar
+		int resultado = calculadoraApplication.somar(a,b);
+		Assertions.assertEquals(resultado,7);
 	}
 
-	//Deve permitir subtrair
+	@Test
 	void subtrair(){
-		//fail("Código não implementado");
-		int resultado = calculadoraApplication.subtrair(valorA, valorB);
-		Assertions.assertEquals(resultado, -1);
-
+		int resultado = calculadoraApplication.somar(a,b);
+		Assertions.assertEquals(resultado,3);
 	}
 
-	//Deve permitir multiplicar
+	@Test
 	void multiplicar(){
-		//fail("Código não implementado");
-		int resultado = calculadoraApplication.multiplicar(valorA, valorB);
-		Assertions.assertEquals(resultado, 6);
+		int resultado = calculadoraApplication.somar(a,b);
+		Assertions.assertEquals(resultado,10);
 	}
 
-
-	//Deve permitir dividir
+	@Test
 	void dividir(){
-		//fail("Código não implementado");
-		int resultado = calculadoraApplication.dividir(valorA, valorB);
-		//Assertions.assertEquals(resultado, -1);
-
+		int a = 6;
+		int resultado = calculadoraApplication.somar(a,b);
+		Assertions.assertEquals(resultado,2.5);
 	}
 
-
-	//Deve gerar erro ao dividir por 0
+	@Test
 	void dividirPorZero(){
-		//fail("Código não implementado");
+		int a = 0;
+		Exception exception = Assertions.assertThrows(ArithmeticException.class, () -> {
+			calculadoraApplication.dividir(a,b);
+		});
+		String msg = "Não aceito valor igual a zero.";
+		String msg2 = exception.getMessage();
+		assertEquals(msg,msg2);
+
 	}
+
 
 }
