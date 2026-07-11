@@ -1,5 +1,6 @@
 package com.fiap.restapi.repository;
 
+import com.fiap.restapi.helper.MensagemHelper;
 import com.fiap.restapi.models.Mensagens;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +36,7 @@ public class MensagemRepositoryTest {
         //Deve permitir registrar mensagens
         void registraMensagem(){
                 //Arrange - preparar
-                var mensagem = gerarMensagem();
+                var mensagem = MensagemHelper.gerarMensagem();
                 when(mensagemRepository.save(any(Mensagens.class))).thenReturn(mensagem);
 
                 //Act - Atuar
@@ -50,7 +51,7 @@ public class MensagemRepositoryTest {
         @Test
         void consultarMensagem(){
                 var id = UUID.randomUUID();
-                var mensagem = gerarMensagem();
+                var mensagem = MensagemHelper.gerarMensagem();
                 mensagem.setId(id);
 
                 when(mensagemRepository.findById(any(UUID.class))).thenReturn(Optional.of(mensagem));
@@ -67,7 +68,7 @@ public class MensagemRepositoryTest {
         @Test
         void apagarMensagem(){
                 var id = UUID.randomUUID();
-                var mensagem = gerarMensagem();
+                var mensagem = MensagemHelper.gerarMensagem();
                 mensagem.setId(id);
 
                 doNothing().when(mensagemRepository).deleteById(any(UUID.class));
@@ -79,10 +80,4 @@ public class MensagemRepositoryTest {
         }
 
 
-        private Mensagens gerarMensagem(){
-                var mensagem = new Mensagens();
-                mensagem.setUsario("fiap");
-                mensagem.setConteudo("Texto");
-                return mensagem;
-        }
 }
