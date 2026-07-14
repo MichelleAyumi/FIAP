@@ -49,6 +49,17 @@ class ApiEndpointsTest {
     }
 
     @Test
+    void devePublicarDocumentacaoOpenApiComOsEndpointsGet() throws Exception {
+        mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.info.title").value("API de Gestão de Restaurantes"))
+                .andExpect(jsonPath("$.paths['/api/user-types'].get").exists())
+                .andExpect(jsonPath("$.paths['/api/users'].get").exists())
+                .andExpect(jsonPath("$.paths['/api/restaurants'].get").exists())
+                .andExpect(jsonPath("$.paths['/api/menu-items'].get").exists());
+    }
+
+    @Test
     void deveExecutarCadastroConsultaAtualizacaoEExclusaoPelaApi() throws Exception {
         // Cadastra um tipo de usuário
         String userTypeJson = "{\"name\":\"Dono de Restaurante\"}";

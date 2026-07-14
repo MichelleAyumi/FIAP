@@ -2,6 +2,8 @@ services:
   database:
     image: postgres:17-alpine
     container_name: techchallenge-database
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: restaurantes
       POSTGRES_USER: postgres

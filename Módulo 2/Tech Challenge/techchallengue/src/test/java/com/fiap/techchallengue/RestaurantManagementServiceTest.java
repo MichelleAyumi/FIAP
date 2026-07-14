@@ -97,7 +97,7 @@ class RestaurantManagementServiceTest {
         // Execução e verificação
         assertThatThrownBy(() -> userTypeService.delete(userType.id()))
                 .isInstanceOf(BusinessException.class)
-                .hasMessageContaining("socio");
+                .hasMessageContaining("associado");
     }
 
     @Test

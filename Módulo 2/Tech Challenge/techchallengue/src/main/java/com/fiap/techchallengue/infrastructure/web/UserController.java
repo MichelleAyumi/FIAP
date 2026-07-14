@@ -3,6 +3,8 @@ package com.fiap.techchallengue.infrastructure.web;
 import com.fiap.techchallengue.application.ApiDtos.UserRequest;
 import com.fiap.techchallengue.application.ApiDtos.UserResponse;
 import com.fiap.techchallengue.application.usecase.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "Usuários", description = "Usuários e associação aos seus tipos")
 public class UserController {
 
     private final UserService userService;
@@ -39,12 +42,14 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar usuários")
     public List<UserResponse> listUsers() {
 
         return userService.list();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Consultar usuário por ID")
     public UserResponse findUserById(@PathVariable Long id) {
 
         return userService.get(id);

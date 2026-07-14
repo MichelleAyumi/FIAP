@@ -3,6 +3,8 @@ package com.fiap.techchallengue.infrastructure.web;
 import com.fiap.techchallengue.application.ApiDtos.UserTypeRequest;
 import com.fiap.techchallengue.application.ApiDtos.UserTypeResponse;
 import com.fiap.techchallengue.application.usecase.UserTypeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user-types")
+@Tag(name = "Tipos de usuário", description = "Gerenciamento dos tipos associados aos usuários")
 public class UserTypeController {
 
     private final UserTypeService userTypeService;
@@ -39,12 +42,14 @@ public class UserTypeController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar tipos de usuário")
     public List<UserTypeResponse> listUserTypes() {
 
         return userTypeService.list();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Consultar tipo de usuário por ID")
     public UserTypeResponse findUserTypeById(@PathVariable Long id) {
 
         return userTypeService.get(id);

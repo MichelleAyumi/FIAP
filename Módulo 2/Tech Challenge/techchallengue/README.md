@@ -81,3 +81,11 @@ Ordem recomendada para cadastrar os dados:
 | 400 | Dado enviado é inválido |
 | 404 | Registro não encontrado |
 | 409 | A operação não pode ser realizada |
+
+## Swagger
+
+Com a aplicação em execução, a documentação interativa fica disponível em:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```

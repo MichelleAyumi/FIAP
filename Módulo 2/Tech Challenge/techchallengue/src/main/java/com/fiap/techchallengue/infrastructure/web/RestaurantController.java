@@ -3,6 +3,8 @@ package com.fiap.techchallengue.infrastructure.web;
 import com.fiap.techchallengue.application.ApiDtos.RestaurantRequest;
 import com.fiap.techchallengue.application.ApiDtos.RestaurantResponse;
 import com.fiap.techchallengue.application.usecase.RestaurantService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/restaurants")
+@Tag(name = "Restaurantes", description = "Cadastro de restaurantes e seus proprietários")
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
@@ -39,12 +42,14 @@ public class RestaurantController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar restaurantes")
     public List<RestaurantResponse> listRestaurants() {
 
         return restaurantService.list();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Consultar restaurante por ID")
     public RestaurantResponse findRestaurantById(@PathVariable Long id) {
 
         return restaurantService.get(id);

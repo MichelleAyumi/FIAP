@@ -3,6 +3,9 @@ package com.fiap.techchallengue.infrastructure.web;
 import com.fiap.techchallengue.application.ApiDtos.MenuItemRequest;
 import com.fiap.techchallengue.application.ApiDtos.MenuItemResponse;
 import com.fiap.techchallengue.application.usecase.MenuItemService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/menu-items")
+@Tag(name = "Itens do cardápio", description = "Itens vendidos pelos restaurantes")
 public class MenuItemController {
 
     private final MenuItemService menuItemService;
@@ -40,11 +44,14 @@ public class MenuItemController {
     }
 
     @GetMapping
-    public List<MenuItemResponse> listMenuItems(@RequestParam(required = false)Long restaurantId) {
+    @Operation(summary = "Listar itens", description = "Lista todos os itens ou filtra pelo ID do restaurante")
+    public List<MenuItemResponse> listMenuItems(
+        @Parameter(description = "ID do restaurante") @RequestParam(required = false) Long restaurantId) {
         return menuItemService.list(restaurantId);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Consultar item do cardápio por ID")
     public MenuItemResponse findMenuItemById(@PathVariable Long id) {
 
         return menuItemService.get(id);
