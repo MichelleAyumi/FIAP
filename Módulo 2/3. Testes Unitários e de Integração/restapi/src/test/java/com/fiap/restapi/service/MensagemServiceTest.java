@@ -72,7 +72,7 @@ public class MensagemServiceTest {
         //Assert
         verify(mensagemRepository, times(1)).findById(any(UUID.class));
         assertThat(mensagemObtida).isEqualTo(mensagem);
-        
+
 
     }
 

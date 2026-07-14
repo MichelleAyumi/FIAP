@@ -1,0 +1,176 @@
+{
+  "info": {
+    "_postman_id": "8c047358-0dcd-4c41-975e-6a7b8c9d0e1f",
+    "name": "Tech Challenge - API de Restaurantes",
+    "description": "Fluxo completo para testar tipos de usuário, usuários, restaurantes e itens do cardápio. Execute na ordem apresentada pelo Collection Runner.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "userTypeId", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "restaurantId", "value": "" },
+    { "key": "menuItemId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 - Cadastrar tipo de usuário",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Dono de Restaurante\"\n}" },
+        "url": "{{baseUrl}}/api/user-types"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Tipo criado com HTTP 201', () => pm.response.to.have.status(201));",
+        "const body = pm.response.json();",
+        "pm.expect(body.name).to.eql('Dono de Restaurante');",
+        "pm.collectionVariables.set('userTypeId', body.id);"
+      ]}}]
+    },
+    {
+      "name": "02 - Listar tipos de usuário",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/user-types" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Lista retornada com HTTP 200', () => pm.response.to.have.status(200));",
+        "pm.expect(pm.response.json()).to.be.an('array');"
+      ]}}]
+    },
+    {
+      "name": "03 - Atualizar tipo de usuário",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Proprietário de Restaurante\"\n}" },
+        "url": "{{baseUrl}}/api/user-types/{{userTypeId}}"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Tipo atualizado com HTTP 200', () => pm.response.to.have.status(200));",
+        "pm.expect(pm.response.json().name).to.eql('Proprietário de Restaurante');"
+      ]}}]
+    },
+    {
+      "name": "04 - Cadastrar usuário responsável",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Ana Souza\",\n  \"email\": \"ana{{$timestamp}}@example.com\",\n  \"typeId\": {{userTypeId}}\n}" },
+        "url": "{{baseUrl}}/api/users"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Usuário criado com HTTP 201', () => pm.response.to.have.status(201));",
+        "const body = pm.response.json();",
+        "pm.expect(body.type.id).to.eql(Number(pm.collectionVariables.get('userTypeId')));",
+        "pm.collectionVariables.set('userId', body.id);"
+      ]}}]
+    },
+    {
+      "name": "05 - Consultar usuário",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/users/{{userId}}" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Usuário encontrado com HTTP 200', () => pm.response.to.have.status(200));",
+        "pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get('userId')));"
+      ]}}]
+    },
+    {
+      "name": "06 - Cadastrar restaurante",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sabor Brasileiro\",\n  \"address\": \"Rua A, 10 - São Paulo/SP\",\n  \"cuisineType\": \"Brasileira\",\n  \"openingTime\": \"11:00:00\",\n  \"closingTime\": \"23:00:00\",\n  \"ownerId\": {{userId}}\n}" },
+        "url": "{{baseUrl}}/api/restaurants"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Restaurante criado com HTTP 201', () => pm.response.to.have.status(201));",
+        "const body = pm.response.json();",
+        "pm.expect(body.owner.id).to.eql(Number(pm.collectionVariables.get('userId')));",
+        "pm.collectionVariables.set('restaurantId', body.id);"
+      ]}}]
+    },
+    {
+      "name": "07 - Listar restaurantes",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/restaurants" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Restaurantes retornados com HTTP 200', () => pm.response.to.have.status(200));",
+        "pm.expect(pm.response.json()).to.be.an('array');"
+      ]}}]
+    },
+    {
+      "name": "08 - Atualizar restaurante",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sabor Brasileiro Premium\",\n  \"address\": \"Rua A, 10 - São Paulo/SP\",\n  \"cuisineType\": \"Brasileira\",\n  \"openingTime\": \"10:30:00\",\n  \"closingTime\": \"23:30:00\",\n  \"ownerId\": {{userId}}\n}" },
+        "url": "{{baseUrl}}/api/restaurants/{{restaurantId}}"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Restaurante atualizado com HTTP 200', () => pm.response.to.have.status(200));",
+        "pm.expect(pm.response.json().name).to.eql('Sabor Brasileiro Premium');"
+      ]}}]
+    },
+    {
+      "name": "09 - Cadastrar item do cardápio",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Feijoada\",\n  \"description\": \"Feijoada completa com acompanhamentos\",\n  \"price\": 39.90,\n  \"dineInOnly\": false,\n  \"photoPath\": \"/images/feijoada.jpg\",\n  \"restaurantId\": {{restaurantId}}\n}" },
+        "url": "{{baseUrl}}/api/menu-items"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Item criado com HTTP 201', () => pm.response.to.have.status(201));",
+        "const body = pm.response.json();",
+        "pm.expect(body.restaurantId).to.eql(Number(pm.collectionVariables.get('restaurantId')));",
+        "pm.collectionVariables.set('menuItemId', body.id);"
+      ]}}]
+    },
+    {
+      "name": "10 - Listar cardápio do restaurante",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/menu-items?restaurantId={{restaurantId}}" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Cardápio retornado com HTTP 200', () => pm.response.to.have.status(200));",
+        "pm.expect(pm.response.json()).to.be.an('array').that.is.not.empty;"
+      ]}}]
+    },
+    {
+      "name": "11 - Consultar item do cardápio",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/menu-items/{{menuItemId}}" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Item encontrado com HTTP 200', () => pm.response.to.have.status(200));",
+        "pm.expect(pm.response.json().name).to.eql('Feijoada');"
+      ]}}]
+    },
+    {
+      "name": "12 - Atualizar item do cardápio",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Feijoada Premium\",\n  \"description\": \"Feijoada completa para consumo no local\",\n  \"price\": 49.90,\n  \"dineInOnly\": true,\n  \"photoPath\": \"/images/feijoada-premium.jpg\",\n  \"restaurantId\": {{restaurantId}}\n}" },
+        "url": "{{baseUrl}}/api/menu-items/{{menuItemId}}"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Item atualizado com HTTP 200', () => pm.response.to.have.status(200));",
+        "pm.expect(pm.response.json().dineInOnly).to.eql(true);"
+      ]}}]
+    },
+    {
+      "name": "13 - Excluir item do cardápio",
+      "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/menu-items/{{menuItemId}}" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Item excluído com HTTP 204', () => pm.response.to.have.status(204));"]}}]
+    },
+    {
+      "name": "14 - Excluir restaurante",
+      "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/restaurants/{{restaurantId}}" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Restaurante excluído com HTTP 204', () => pm.response.to.have.status(204));"]}}]
+    },
+    {
+      "name": "15 - Excluir usuário",
+      "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/users/{{userId}}" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Usuário excluído com HTTP 204', () => pm.response.to.have.status(204));"]}}]
+    },
+    {
+      "name": "16 - Excluir tipo de usuário",
+      "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/user-types/{{userTypeId}}" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Tipo excluído com HTTP 204', () => pm.response.to.have.status(204));"]}}]
+    }
+  ]
+}

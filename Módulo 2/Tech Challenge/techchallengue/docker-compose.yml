@@ -1,0 +1,29 @@
+services:
+  database:
+    image: postgres:17-alpine
+    container_name: techchallenge-database
+    environment:
+      POSTGRES_DB: restaurantes
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d restaurantes"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  api:
+    build: .
+    container_name: techchallenge-api
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://database:5432/restaurantes
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      database:
+        condition: service_healthy
+volumes:
+  postgres_data:
