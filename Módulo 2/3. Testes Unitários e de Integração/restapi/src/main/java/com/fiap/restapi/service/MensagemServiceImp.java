@@ -12,6 +12,9 @@ public class MensagemServiceImp implements MensagemService{
 
     private final MensagemRepository mensagemRepository;
 
+    public MensagemServiceImp(MensagemRepository mensagemRepository) {
+        this.mensagemRepository = mensagemRepository;
+    }
 
     @Override
     //@RequiredArgsConstructor

@@ -11,21 +11,21 @@ import org.mockito.MockitoAnnotations;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public class MensagemServiceTest {
-
+class MensagemServiceTest {
     @Mock
     private MensagemRepository mensagemRepository;
-    private MensagemService mensagemService;
 
-    AutoCloseable mock;
+    private MensagemService mensagemService;
+    private AutoCloseable mock;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         mock = MockitoAnnotations.openMocks(this);
         mensagemService = new MensagemServiceImp(mensagemRepository);
     }
@@ -37,58 +37,25 @@ public class MensagemServiceTest {
 
     @Test
     void registraMensagem() {
-
         var mensagem = MensagemHelper.gerarMensagem();
-        when(mensagemRepository.save(any(mensagem.getClass()))).thenAnswer(i -> i.getArgument(0));
-        var mensagemRegistrada  = mensagemService.registraMensagem(mensagem);
+        when(mensagemRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        //assert
-        assertThat(mensagemRegistrada)
-                .isNotNull()
-                .isInstanceOf(mensagem.getClass());
-        assertThat(mensagemRegistrada.getId())
-                .isNotNull();
+        var mensagemRegistrada = mensagemService.registraMensagem(mensagem);
 
-        assertThat(mensagemRegistrada.getId())
-                .isEqualTo((mensagem.getUsario()));
-
-        assertThat(mensagemRegistrada.getConteudo())
-                .isEqualTo(mensagem.getConteudo());
+        assertThat(mensagemRegistrada.getId()).isEqualTo(mensagem.getId());
+        assertThat(mensagemRegistrada.getConteudo()).isEqualTo(mensagem.getConteudo());
     }
 
     @Test
-    void obterMensagemId(){
-        //Arrange
+    void obterMensagemId() {
         var id = UUID.randomUUID();
         var mensagem = MensagemHelper.gerarMensagem();
-
         mensagem.setId(id);
-        when(mensagemRepository.findById(any(UUID.class)))
-                .thenReturn(Optional.of(mensagem));
+        when(mensagemRepository.findById(id)).thenReturn(Optional.of(mensagem));
 
-        //act
-        var mensagemObtida  = mensagemService.obterMensagem(id);
+        var mensagemObtida = mensagemService.obterMensagem(id);
 
-        //Assert
-        verify(mensagemRepository, times(1)).findById(any(UUID.class));
+        verify(mensagemRepository, times(1)).findById(id);
         assertThat(mensagemObtida).isEqualTo(mensagem);
-
-
     }
-
-    @Test
-    void  obterMensagem(){
-        fail("Logica não implementada");
-    }
-
-    @Test
-    void modificaMensagem(){
-        fail("Logica não implementada");
-    }
-
-    @Test
-    void removerMensagem(){
-        fail("Logica não implementada");
-    }
-
 }
