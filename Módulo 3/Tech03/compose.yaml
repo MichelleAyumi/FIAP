@@ -1,0 +1,100 @@
+name: tech03
+services:
+  scheduling-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: scheduling
+      POSTGRES_USER: hospital
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-Tech03DatabaseLocal!}
+    volumes: [scheduling-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U hospital -d scheduling"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  notification-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: notifications
+      POSTGRES_USER: hospital
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-Tech03DatabaseLocal!}
+    volumes: [notification-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U hospital -d notifications"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  rabbitmq:
+    image: rabbitmq:4.1-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER:-tech03}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD:-Tech03RabbitLocal!}
+    ports: ["127.0.0.1:5672:5672", "127.0.0.1:15672:15672"]
+    volumes: [rabbit-data:/var/lib/rabbitmq]
+    healthcheck:
+      test: [CMD, rabbitmq-diagnostics, -q, ping]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports: ["127.0.0.1:1025:1025", "127.0.0.1:8025:8025"]
+  scheduling-service:
+    build:
+      context: .
+      args: {SERVICE: scheduling-service}
+    environment:
+      SPRING_PROFILES_ACTIVE: demo
+      DB_URL: jdbc:postgresql://scheduling-db:5432/scheduling
+      DB_USER: hospital
+      DB_PASSWORD: ${DB_PASSWORD:-Tech03DatabaseLocal!}
+      RABBIT_HOST: rabbitmq
+      RABBIT_USER: ${RABBIT_USER:-tech03}
+      RABBIT_PASSWORD: ${RABBIT_PASSWORD:-Tech03RabbitLocal!}
+      MONITOR_PASSWORD: ${MONITOR_PASSWORD:-Monitor123!}
+    ports: ["127.0.0.1:8080:8080"]
+    depends_on:
+      scheduling-db: {condition: service_healthy}
+      rabbitmq: {condition: service_healthy}
+  notification-service:
+    build:
+      context: .
+      args: {SERVICE: notification-service}
+    environment:
+      SPRING_PROFILES_ACTIVE: demo
+      DB_URL: jdbc:postgresql://notification-db:5432/notifications
+      DB_USER: hospital
+      DB_PASSWORD: ${DB_PASSWORD:-Tech03DatabaseLocal!}
+      RABBIT_HOST: rabbitmq
+      RABBIT_USER: ${RABBIT_USER:-tech03}
+      RABBIT_PASSWORD: ${RABBIT_PASSWORD:-Tech03RabbitLocal!}
+      SMTP_HOST: mailpit
+      MONITOR_PASSWORD: ${MONITOR_PASSWORD:-Monitor123!}
+      REMINDER_LEAD_SECONDS: ${REMINDER_LEAD_SECONDS:-86400}
+    ports: ["127.0.0.1:8081:8081"]
+    depends_on:
+      notification-db: {condition: service_healthy}
+      rabbitmq: {condition: service_healthy}
+      mailpit: {condition: service_started}
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    profiles: [monitoring]
+    volumes: [./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro, ./infra/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro, prometheus-data:/prometheus]
+    ports: ["127.0.0.1:9090:9090"]
+    depends_on: [scheduling-service, notification-service]
+  grafana:
+    image: grafana/grafana:12.1.1
+    profiles: [monitoring]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-Grafana123!}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports: ["127.0.0.1:3000:3000"]
+    volumes: [./infra/grafana/provisioning:/etc/grafana/provisioning:ro, ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro, grafana-data:/var/lib/grafana]
+    depends_on: [prometheus]
+volumes:
+  scheduling-data:
+  notification-data:
+  rabbit-data:
+  prometheus-data:
+  grafana-data:

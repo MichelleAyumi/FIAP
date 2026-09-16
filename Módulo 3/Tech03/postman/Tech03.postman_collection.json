@@ -1,0 +1,543 @@
+{
+  "info": {
+    "name": "Tech03 - Hospital (demo)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "doctorUser",
+      "value": "medico",
+      "type": "string"
+    },
+    {
+      "key": "doctorPassword",
+      "value": "medico1234",
+      "type": "string"
+    },
+    {
+      "key": "nurseUser",
+      "value": "enfermeiro",
+      "type": "string"
+    },
+    {
+      "key": "nursePassword",
+      "value": "enfermeiro1234",
+      "type": "string"
+    },
+    {
+      "key": "patientUser",
+      "value": "paciente",
+      "type": "string"
+    },
+    {
+      "key": "patientPassword",
+      "value": "paciente1234",
+      "type": "string"
+    },
+    {
+      "key": "appointmentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "version",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "startsAt",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Enfermeiro cria consulta",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{nurseUser}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{nursePassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation($input:AppointmentInput!){createAppointment(input:$input){id version startsAt}}",
+            "variables": "{\"input\": {\"patientId\": \"pac-001\", \"doctorId\": \"doc-001\", \"startsAt\": \"{{startsAt}}\", \"durationMinutes\": 30, \"reason\": \"Consulta de demonstracao\"}}"
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set(\"startsAt\", new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"GraphQL sem erros\", () => pm.expect(body.errors).to.be.undefined);",
+              "if (body.data?.createAppointment) { pm.collectionVariables.set(\"appointmentId\", body.data.createAppointment.id); pm.collectionVariables.set(\"version\", body.data.createAppointment.version); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Paciente ve suas consultas",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{patientUser}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{patientPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "{history(patientId:\"pac-001\"){id startsAt reason clinicalNotes version}}",
+            "variables": "{}"
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"GraphQL sem erros\", () => pm.expect(body.errors).to.be.undefined);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Paciente consulta somente futuras",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{patientUser}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{patientPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "{history(patientId:\"pac-001\",futureOnly:true,limit:10,offset:0){id startsAt}}",
+            "variables": "{}"
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"GraphQL sem erros\", () => pm.expect(body.errors).to.be.undefined);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Medico edita agendamento",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{doctorUser}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{doctorPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation($id:ID!,$input:AppointmentInput!){updateAppointment(id:$id,expectedVersion:1,input:$input){id version startsAt}}",
+            "variables": "{\"id\": \"{{appointmentId}}\", \"input\": {\"patientId\": \"pac-001\", \"doctorId\": \"doc-001\", \"startsAt\": \"{{startsAt}}\", \"durationMinutes\": 30, \"reason\": \"Consulta de demonstracao\"}}"
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set(\"startsAt\", new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"GraphQL sem erros\", () => pm.expect(body.errors).to.be.undefined);",
+              "if (body.data?.updateAppointment) { pm.collectionVariables.set(\"appointmentId\", body.data.updateAppointment.id); pm.collectionVariables.set(\"version\", body.data.updateAppointment.version); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Medico edita historico",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{doctorUser}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{doctorPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation($id:ID!){updateClinicalNotes(id:$id,expectedVersion:2,notes:\"Registro clinico ficticio para avaliacao\"){id version clinicalNotes}}",
+            "variables": "{\"id\": \"{{appointmentId}}\"}"
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"GraphQL sem erros\", () => pm.expect(body.errors).to.be.undefined);",
+              "if (body.data?.updateClinicalNotes) { pm.collectionVariables.set(\"appointmentId\", body.data.updateClinicalNotes.id); pm.collectionVariables.set(\"version\", body.data.updateClinicalNotes.version); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Enfermeiro consulta historico",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{nurseUser}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{nursePassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "{history(patientId:\"pac-001\"){id clinicalNotes version}}",
+            "variables": "{}"
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"GraphQL sem erros\", () => pm.expect(body.errors).to.be.undefined);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Paciente nao pode ler outro paciente",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{patientUser}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{patientPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "{history(patientId:\"pac-002\"){id clinicalNotes}}",
+            "variables": "{}"
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"Acesso negado\", () => pm.expect(body.errors[0].extensions.classification).to.eql(\"FORBIDDEN\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - Enfermeiro nao pode editar registro",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{nurseUser}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{nursePassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation($id:ID!){updateClinicalNotes(id:$id,expectedVersion:3,notes:\"Nao permitido\"){id}}",
+            "variables": "{\"id\": \"{{appointmentId}}\"}"
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"Acesso negado\", () => pm.expect(body.errors[0].extensions.classification).to.eql(\"FORBIDDEN\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - Paciente nao cria consulta",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{patientUser}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{patientPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/graphql",
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation($input:AppointmentInput!){createAppointment(input:$input){id}}",
+            "variables": "{\"input\": {\"patientId\": \"pac-001\", \"doctorId\": \"doc-001\", \"startsAt\": \"{{startsAt}}\", \"durationMinutes\": 30, \"reason\": \"Consulta de demonstracao\"}}"
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"Acesso negado\", () => pm.expect(body.errors[0].extensions.classification).to.eql(\"FORBIDDEN\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 - Sem autenticacao retorna 401",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "{{baseUrl}}/graphql",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"{history(patientId: \\\"pac-001\\\"){id}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

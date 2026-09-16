@@ -1,0 +1,28 @@
+type Query {
+  history(patientId: ID!, futureOnly: Boolean = false, limit: Int = 50, offset: Int = 0): [Appointment!]!
+  appointment(id: ID!): Appointment!
+}
+type Mutation {
+  createAppointment(input: AppointmentInput!): Appointment!
+  updateAppointment(id: ID!, expectedVersion: Int!, input: AppointmentInput!): Appointment!
+  updateClinicalNotes(id: ID!, expectedVersion: Int!, notes: String!): Appointment!
+}
+type Appointment {
+  id: ID!
+  patientId: ID!
+  doctorId: ID!
+  startsAt: String!
+  durationMinutes: Int!
+  reason: String!
+  clinicalNotes: String!
+  version: Int!
+  createdAt: String!
+  updatedAt: String!
+}
+input AppointmentInput {
+  patientId: ID!
+  doctorId: ID!
+  startsAt: String!
+  durationMinutes: Int!
+  reason: String!
+}

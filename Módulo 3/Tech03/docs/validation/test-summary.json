@@ -1,0 +1,26 @@
+{
+  "suites": [
+    {
+      "name": "com.fiap.tech03.notification.NotificationIntegrationTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "21.643"
+    },
+    {
+      "name": "com.fiap.tech03.scheduling.SchedulingIntegrationTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "40.508"
+    }
+  ],
+  "postman": {
+    "requests": 10,
+    "assertions": 19,
+    "failures": 0
+  },
+  "date": "2026-09-14"
+}

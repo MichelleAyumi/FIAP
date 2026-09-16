@@ -1,0 +1,18 @@
+groups:
+  - name: hospital
+    rules:
+      - alert: HospitalServiceUnavailable
+        expr: up{job="hospital"} == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: "Sem coleta de metricas por 1 minuto"}
+      - alert: AppointmentEventsPending
+        expr: hospital_outbox_pending > 0
+        for: 2m
+        labels: {severity: warning}
+        annotations: {summary: "Eventos aguardando publicacao"}
+      - alert: ReminderDeliveryFailed
+        expr: hospital_reminders_failed > 0
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "Esgotaram as tentativas de envio."}
