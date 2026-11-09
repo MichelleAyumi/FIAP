@@ -1,0 +1,16 @@
+// Executar em Application Insights > Logs
+requests
+| where timestamp > ago(24h)
+| summarize execucoes=count(), falhas=countif(success == false) by operation_Name
+
+// Executar separadamente
+exceptions
+| where timestamp > ago(24h)
+| project timestamp, operation_Name, type, outerMessage
+| order by timestamp desc
+
+// Executar separadamente
+traces
+| where timestamp > ago(24h)
+| where message has_any ('Relatório semanal', 'Alerta enviado', 'Avaliação registrada')
+| project timestamp, message

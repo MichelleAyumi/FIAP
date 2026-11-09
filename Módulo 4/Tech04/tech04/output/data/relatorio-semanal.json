@@ -1,0 +1,77 @@
+{
+  "inicioInclusivo":"2026-10-19T03:00:00Z",
+  "fimExclusivo":"2026-10-26T03:00:00Z",
+  "fusoHorario":"America/Sao_Paulo",
+  "quantidade":12,"mediaNotas":6.0,"quantidadePorDia":{"2026-10-19":2,"2026-10-20":1,"2026-10-21":3,"2026-10-22":2,"2026-10-23":2,"2026-10-24":2,"2026-10-25":0},
+  "quantidadePorUrgencia":{"ATENCAO":3,"CRITICA":3,"NORMAL":6},"avaliacoes":[
+
+  {"id":"demo-20261019-01",
+    "descricao":"Explicação de deploy precisa de mais exemplos.",
+    "nota":2,
+    "urgencia":"CRITICA",
+    "dataEnvio":"2026-10-19T12:00:00Z"},
+
+  {"id":"demo-20261019-02",
+    "descricao":"Exemplos de armazenamento claros.",
+    "nota":8,"urgencia":"NORMAL",
+    "dataEnvio":"2026-10-19T17:00:00Z"
+  },
+  {"id":"demo-20261019-03",
+    "descricao":"Dificuldade para configurar permissões.",
+    "nota":3,
+    "urgencia":"CRITICA",
+    "dataEnvio":"2026-10-20T13:00:00Z"},
+
+  {"id":"demo-20261019-04",
+    "descricao":"Aula de funções bem organizada.",
+    "nota":7,
+    "urgencia":"NORMAL",
+    "dataEnvio":"2026-10-21T12:00:00Z"},
+
+  {"id":"demo-20261019-05",
+    "descricao":"Ritmo da explicação poderia ser mais lento.",
+    "nota":5,
+    "urgencia":"ATENCAO",
+    "dataEnvio":"2026-10-21T14:00:00Z"},
+
+  {"id":"demo-20261019-06",
+    "descricao":"Prática de monitoramento excelente.",
+    "nota":10,
+    "urgencia":"NORMAL",
+    "dataEnvio":"2026-10-21T18:00:00Z"},
+
+  {"id":"demo-20261019-07",
+    "descricao":"Reforçar o conceito de filas.",
+    "nota":6,
+    "urgencia":"ATENCAO",
+    "dataEnvio":"2026-10-22T12:00:00Z"},
+
+  {"id":"demo-20261019-08",
+    "descricao":"Demonstração prática ajudou no aprendizado.",
+    "nota":9,
+    "urgencia":"NORMAL",
+    "dataEnvio":"2026-10-22T17:00:00Z"},
+
+  {"id":"demo-20261019-09",
+    "descricao":" Não consegui concluir o exercício de acesso.",
+    "nota":1,
+    "urgencia":"CRITICA",
+    "dataEnvio":"2026-10-23T13:00:00Z"},
+
+  {"id":"demo-20261019-10",
+    "descricao":" Material complementar foi útil.",
+    "nota":8,
+    "urgencia":"NORMAL",
+    "dataEnvio":"2026-10-23T18:00:00Z"},
+
+  {"id":"demo-20261019-11",
+    "descricao":"Faltaram exemplos de configuração.",
+    "nota":4,
+    "urgencia":"ATENCAO",
+    "dataEnvio":"2026-10-24T12:00:00Z"},
+
+  {"id":"demo-20261019-12",
+    "descricao":"Revisão final esclareceu as dúvidas.",
+    "nota":9,
+    "urgencia":"NORMAL",
+    "dataEnvio":"2026-10-24T17:00:00Z"}]}

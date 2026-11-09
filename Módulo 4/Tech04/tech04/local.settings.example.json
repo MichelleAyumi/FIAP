@@ -1,0 +1,9 @@
+{
+ "IsEncrypted": false,
+ "Values": {
+  "FUNCTIONS_WORKER_RUNTIME": "java", "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+  "DATA_STORAGE_CONNECTION": "UseDevelopmentStorage=true", "WEEKLY_SCHEDULE": "0 0 12 * * 1",
+  "EMAIL_CONNECTION_STRING": "", "EMAIL_SENDER": "", "ADMIN_EMAIL": "",
+  "AzureWebJobs.EnviarAlerta.Disabled": "true", "AzureWebJobs.GerarRelatorioSemanal.Disabled": "true"
+ }
+}
