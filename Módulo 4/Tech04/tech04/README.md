@@ -15,7 +15,7 @@ As três funções têm responsabilidades separadas. O plano executa sob demanda
 - Descrição: 1 a 2000 caracteres. Nota: inteiro de 0 a 10.
 - Notas 0–3: CRITICA; 4–6: ATENCAO; 7–10: NORMAL.
 - Relatório: segunda-feira às 12:00 UTC (09:00 de São Paulo). Inclui média, descrição, urgência, data e contagens por dia/urgência. Semana vazia tem média null e contagens zero.
-- Endpoint canônico sem acento: `/api/avaliacao`, equivalente à referência de entrada do enunciado.
+- Endpoint canônico sem acento: `/api/avaliacao`, equivalente à referênxscia de entrada do enunciado.
 
 ## Segurança e privacidade
 
